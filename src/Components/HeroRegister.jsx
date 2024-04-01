@@ -14,6 +14,7 @@ const HeroRegister = () => {
 
     const email = e.target.email.value;
     const password = e.target.password.value;
+    const checked = e.target.terms.checked;
 
     // Reset Error Msg
 
@@ -27,6 +28,9 @@ const HeroRegister = () => {
       setRegisterError(
         "Your password should contain at least one Upper Case character"
       );
+      return;
+    } else if (!checked) {
+      setRegisterError("Please Accept Our Terms and Conditions");
       return;
     }
 
@@ -93,6 +97,13 @@ const HeroRegister = () => {
                   <a href="#" className="label-text-alt link link-hover">
                     Forgot password?
                   </a>
+                </label>
+              </div>
+
+              <div className="flex gap-2 items-center">
+                <input type="checkbox" name="terms" id="term" />
+                <label htmlFor="term">
+                  Accept our <a href="#">terms & conditions</a>{" "}
                 </label>
               </div>
               <div className="form-control mt-6">
