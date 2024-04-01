@@ -1,4 +1,7 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import { useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { Link } from "react-router-dom";
@@ -12,7 +15,7 @@ const HeroRegister = () => {
   const handleRegister = (e) => {
     e.preventDefault();
     console.log("form submitted");
-
+    const name = e.target.name.value;
     const email = e.target.email.value;
     const password = e.target.password.value;
     const checked = e.target.terms.checked;
@@ -36,11 +39,27 @@ const HeroRegister = () => {
     }
 
     console.log(email, password);
-
     createUserWithEmailAndPassword(auth, email, password)
       .then((result) => {
-        console.log(result);
+        console.log(result.user);
         setSuccess("You are successfully registered");
+
+        // Update Profile Information
+        // updateProfile(auth.currentUser, {
+        //   displayName: name,
+        //   photoURL: "https://example.com/jane-q-user/profile.jpg",
+        // })
+        //   .then(() => {
+        //     console.log("Profile Updated");
+        //   })
+        //   .error((error) => {
+        //     console.log(error.message);
+        //   });
+
+        // Send email verification
+        sendEmailVerification(result.user).then(() => {
+          alert("Please check your email and verify your account");
+        });
       })
       .catch((error) => {
         const errorMsg = error.message;
@@ -65,6 +84,18 @@ const HeroRegister = () => {
             <form onSubmit={handleRegister} className="card-body">
               <div className="form-control">
                 <label className="label">
+                  <span className="label-text">Name</span>
+                </label>
+                <input
+                  name="name"
+                  type="text"
+                  placeholder="name"
+                  className="input input-bordered"
+                  required
+                />
+              </div>
+              <div className="form-control">
+                <label className="label">
                   <span className="label-text">Email</span>
                 </label>
                 <input
@@ -75,6 +106,7 @@ const HeroRegister = () => {
                   required
                 />
               </div>
+
               <div className="form-control">
                 <label className="label">
                   <span className="label-text">Password</span>
