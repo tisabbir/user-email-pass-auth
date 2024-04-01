@@ -1,10 +1,12 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import auth from "../firebase/firebase.config";
 
 const HeroRegister = () => {
   const [registerError, setRegisterError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -13,12 +15,22 @@ const HeroRegister = () => {
     const email = e.target.email.value;
     const password = e.target.password.value;
 
-    console.log(email, password);
-
     // Reset Error Msg
 
     setRegisterError("");
     setSuccess("");
+
+    if (password.length < 6) {
+      setRegisterError("Password should be at least 6 characters!");
+      return;
+    } else if (!/[A-Z]/.test(password)) {
+      setRegisterError(
+        "Your password should contain at least one Upper Case character"
+      );
+      return;
+    }
+
+    console.log(email, password);
 
     createUserWithEmailAndPassword(auth, email, password)
       .then((result) => {
@@ -62,13 +74,21 @@ const HeroRegister = () => {
                 <label className="label">
                   <span className="label-text">Password</span>
                 </label>
-                <input
-                  name="password"
-                  type="password"
-                  placeholder="password"
-                  className="input input-bordered"
-                  required
-                />
+                <div className="relative">
+                  <input
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="password"
+                    className="input input-bordered w-full"
+                    required
+                  />
+                  <span
+                    className="absolute top-1/3 right-3"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+                  </span>
+                </div>
                 <label className="label">
                   <a href="#" className="label-text-alt link link-hover">
                     Forgot password?
