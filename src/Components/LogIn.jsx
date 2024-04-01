@@ -1,10 +1,15 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { useState } from "react";
+import {
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import auth from "../firebase/firebase.config";
 
 const LogIn = () => {
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+  const emailRef = useRef(null);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -28,6 +33,27 @@ const LogIn = () => {
       });
   };
 
+  const handleForgetPassword = () => {
+    const email = emailRef.current.value;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      setError("Please Provide an Email");
+      return;
+    } else if (!emailPattern.test(email)) {
+      setError("Please enter a valid Email");
+      return;
+    }
+
+    // Send Reset email
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        console.log("check your email");
+      })
+      .catch((error) => {
+        console.error(error.message);
+      });
+  };
+
   return (
     <div>
       <div className="hero min-h-screen bg-base-200">
@@ -47,6 +73,7 @@ const LogIn = () => {
                   <span className="label-text">Email</span>
                 </label>
                 <input
+                  ref={emailRef}
                   name="email"
                   type="email"
                   placeholder="email"
@@ -66,7 +93,11 @@ const LogIn = () => {
                   required
                 />
                 <label className="label">
-                  <a href="#" className="label-text-alt link link-hover">
+                  <a
+                    onClick={handleForgetPassword}
+                    href="#"
+                    className="label-text-alt link link-hover"
+                  >
                     Forgot password?
                   </a>
                 </label>
@@ -79,6 +110,13 @@ const LogIn = () => {
               <p className="text-green-600 text-center mb-2">{success}</p>
             )}
             {error && <p className="text-red-600 text-center mb-2">{error}</p>}
+
+            <p className="text-center mb-2">
+              New Here? Please{" "}
+              <Link className="text-purple-700" to={"/heroRegister"}>
+                Register
+              </Link>{" "}
+            </p>
           </div>
         </div>
       </div>

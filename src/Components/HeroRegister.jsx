@@ -1,6 +1,7 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 import auth from "../firebase/firebase.config";
 
 const HeroRegister = () => {
@@ -93,11 +94,6 @@ const HeroRegister = () => {
                     {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
                   </span>
                 </div>
-                <label className="label">
-                  <a href="#" className="label-text-alt link link-hover">
-                    Forgot password?
-                  </a>
-                </label>
               </div>
 
               <div className="flex gap-2 items-center">
@@ -117,6 +113,12 @@ const HeroRegister = () => {
             {success && (
               <p className="text-green-700 text-center mb-4">{success}</p>
             )}
+            <p className="text-center mb-2">
+              Already have an account? Please{" "}
+              <Link className="text-purple-700" to={"/login"}>
+                Login
+              </Link>{" "}
+            </p>
           </div>
         </div>
       </div>
